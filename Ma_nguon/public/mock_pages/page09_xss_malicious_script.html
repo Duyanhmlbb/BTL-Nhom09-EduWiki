@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta property="og:title" content="Trang thử nghiệm Mã độc XSS và Nội dung Không an toàn">
+    <title>XSS Test Page - Kiểm tra năng lực làm sạch mã độc</title>
+</head>
+<body>
+<header><nav><a href="/">Trang chủ</a></nav></header>
+<main>
+<article>
+    <h1>Trang thử nghiệm Mã độc XSS và Nội dung Không an toàn</h1>
+    <p>Trang này được cố tình thiết kế chứa các mã độc có thể thực thi để kiểm thử khả năng phòng vệ của ứng dụng lưu trữ Wiki Archiver.</p>
+    
+    <!-- Đoạn mã script nguy hiểm -->
+    <script>
+        alert("CẢNH BÁO: Mã script nguy hiểm đã chạy nếu bạn nhìn thấy thông báo này!");
+        console.error("XSS Vulnerability detected!");
+    </script>
+
+    <!-- Thẻ iframe độc hại trỏ ra ngoài -->
+    <iframe src="https://malicious-attacker-domain.org/phishing" style="display:none;"></iframe>
+
+    <!-- Các thuộc tính sự kiện inline nguy hiểm -->
+    <p onclick="alert('Đã kích hoạt sự kiện onclick trái phép!')" onmouseover="alert('onmouseover!')" style="color: #b91c1c; font-weight: bold;">
+        Đoạn văn này chứa thuộc tính onclick và onmouseover độc hại.
+    </p>
+
+    <!-- Liên kết chứa giao thức javascript: -->
+    <p>
+        <a href="javascript:alert('Đã chạy mã javascript trong liên kết a href!')">Bấm vào đây để nhận thưởng (Link độc)</a>
+    </p>
+
+    <!-- Thẻ ảnh chứa sự kiện onload phá hoại -->
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Test-Logo.svg/150px-Test-Logo.svg.png" alt="Ảnh test" onload="alert('XSS từ thẻ img onload!')">
+
+    <h2>Nội dung văn bản an toàn</h2>
+    <p>Hệ thống Wiki Archiver khi lưu trang này PHẢI giữ lại nội dung văn bản này nhưng LOẠI BỎ TRIỆT ĐỂ tất cả mã script, iframe độc hại và các sự kiện onclick trên đây.</p>
+</article>
+</main>
+<footer><p>&copy; 2026 MockBlog. Bài viết mẫu số 09 (Thử nghiệm XSS).</p></footer>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta property="og:title" content="Hướng dẫn Lập trình Hướng đối tượng OOP trong PHP">
+    <title>OOP PHP - Hướng dẫn từ cơ bản đến nâng cao</title>
+</head>
+<body>
+<header><nav><a href="/">Trang chủ</a> &raquo; <a href="/lap-trinh">Lập trình</a></nav></header>
+<main>
+<article>
+    <h1>Hướng dẫn Lập trình Hướng đối tượng OOP trong PHP</h1>
+    <p>Lập trình hướng đối tượng (Object-Oriented Programming - OOP) là một mô hình lập trình mạnh mẽ được áp dụng rộng rãi trong PHP và nhiều ngôn ngữ hiện đại khác.</p>
+    <h2>1. Các khái niệm cốt lõi</h2>
+    <p>OOP xoay quanh bốn khái niệm chính: <strong>đóng gói</strong> (encapsulation), <strong>kế thừa</strong> (inheritance), <strong>đa hình</strong> (polymorphism) và <strong>trừu tượng</strong> (abstraction).</p>
+    <h2>2. Lớp và Đối tượng</h2>
+    <p>Lớp (class) là bản thiết kế (blueprint) để tạo ra các đối tượng (object). Một đối tượng là thể hiện (instance) cụ thể của một lớp.</p>
+    <pre><code>class Animal {
+    protected string $name;
+    public function __construct(string $name) {
+        $this->name = $name;
+    }
+    public function speak(): string {
+        return "{$this->name} nói gì đó.";
+    }
+}
+
+class Dog extends Animal {
+    public function speak(): string {
+        return "{$this->name} nói: Gâu gâu!";
+    }
+}
+
+$dog = new Dog("Milo");
+echo $dog->speak(); // Milo nói: Gâu gâu!</code></pre>
+    <h2>3. Đa hình (Polymorphism)</h2>
+    <p>Đa hình cho phép các đối tượng thuộc các lớp khác nhau phản hồi cùng một thông điệp theo cách riêng của chúng. Đây là tính năng cốt lõi giúp code linh hoạt và dễ mở rộng.</p>
+    <h2>4. Interface và Abstract Class</h2>
+    <p>Interface định nghĩa hợp đồng mà các lớp phải thực thi. Abstract class cung cấp một bộ khung chung cho các lớp con.</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/OOP.png/300px-OOP.png" alt="Sơ đồ OOP">
+    <p>Lập trình hướng đối tượng giúp tổ chức code rõ ràng, tái sử dụng được và dễ bảo trì. Đây là kỹ năng không thể thiếu cho bất kỳ lập trình viên PHP chuyên nghiệp nào.</p>
+</article>
+</main>
+<footer><p>&copy; 2026 MockBlog. Bài viết mẫu số 01.</p></footer>
+</body>
+</html>

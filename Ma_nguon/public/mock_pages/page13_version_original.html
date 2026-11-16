@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta property="og:title" content="Hướng dẫn Docker Cơ bản cho Lập trình viên PHP">
+    <title>Docker PHP Cơ bản - Phiên bản 1.0 Khởi đầu</title>
+</head>
+<body>
+<header><nav><a href="/">Trang chủ</a> &raquo; <a href="/devops">DevOps</a></nav></header>
+<main>
+<article>
+    <h1>Hướng dẫn Docker Cơ bản cho Lập trình viên PHP</h1>
+    <p><em>Phiên bản 1.0 (Bản gốc ban đầu).</em> Docker giúp đóng gói ứng dụng PHP cùng toàn bộ môi trường thực thi vào một container nhẹ và nhất quán.</p>
+    <h2>1. Dockerfile cơ bản cho PHP-FPM</h2>
+    <p>Tạo tệp Dockerfile để định nghĩa hệ điều hành nền tảng và cài đặt các phần mở rộng PHP cần thiết:</p>
+    <pre><code>FROM php:8.2-fpm
+RUN apt-get update &amp;&amp; apt-get install -y libpq-dev \
+    &amp;&amp; docker-php-ext-install pdo pdo_pgsql</code></pre>
+    <h2>2. Lợi ích của Container hóa</h2>
+    <p>Loại bỏ hoàn toàn vấn đề "chạy được trên máy tôi nhưng lỗi trên máy bạn". Môi trường phát triển và môi trường máy chủ sản xuất hoàn toàn giống hệt nhau.</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Docker_%28container_engine%29_logo.svg/220px-Docker_%28container_engine%29_logo.svg.png" alt="Docker Logo">
+    <p>Đây là phiên bản tài liệu ban đầu. Khi trang web gốc được bổ sung thêm kiến thức, người dùng có thể bấm nút 'Cập nhật phiên bản mới' trên Wiki Archiver.</p>
+</article>
+</main>
+<footer><p>&copy; 2026 MockBlog. Bài viết mẫu số 13 (Phiên bản ban đầu).</p></footer>
+</body>
+</html>

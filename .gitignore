@@ -1,0 +1,6 @@
+.local/
+*.log
+.env
+env.local.sh
+.DS_Store
+Thumbs.db

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta property="og:title" content="Hướng dẫn sử dụng PostgreSQL và PDO trong PHP">
+    <title>PostgreSQL &amp; PDO PHP - Hướng dẫn toàn diện</title>
+</head>
+<body>
+<header><nav><a href="/">Trang chủ</a> &raquo; <a href="/database">Cơ sở dữ liệu</a></nav></header>
+<main>
+<article>
+    <h1>Hướng dẫn sử dụng PostgreSQL và PDO trong PHP</h1>
+    <p>PostgreSQL là hệ quản trị cơ sở dữ liệu quan hệ mã nguồn mở mạnh mẽ nhất hiện nay, hỗ trợ đầy đủ SQL chuẩn và nhiều tính năng nâng cao.</p>
+    <h2>1. Kết nối PostgreSQL bằng PDO</h2>
+    <p>PHP Data Objects (PDO) cung cấp interface thống nhất để kết nối nhiều loại cơ sở dữ liệu khác nhau, bao gồm PostgreSQL.</p>
+    <pre><code>$dsn = "pgsql:host=127.0.0.1;port=5432;dbname=mydb";
+$pdo = new PDO($dsn, 'username', 'password', [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+]);</code></pre>
+    <h2>2. Truy vấn an toàn với Prepared Statements</h2>
+    <p>Prepared statements là cách hiệu quả nhất để chống tấn công SQL Injection. Luôn sử dụng tham số ràng buộc thay vì nối chuỗi trực tiếp.</p>
+    <pre><code>$stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? AND active = ?");
+$stmt->execute([$username, true]);
+$user = $stmt->fetch();</code></pre>
+    <h2>3. Transaction và ACID</h2>
+    <p>PostgreSQL hỗ trợ đầy đủ thuộc tính ACID (Atomicity, Consistency, Isolation, Durability) thông qua transaction. Đây là yếu tố quan trọng đảm bảo tính toàn vẹn dữ liệu.</p>
+    <h2>4. Full-Text Search trong PostgreSQL</h2>
+    <p>PostgreSQL có hỗ trợ tìm kiếm toàn văn bản (full-text search) mạnh mẽ với kiểu dữ liệu tsvector và tsquery. Có thể tích hợp từ điển tiếng Việt để tìm kiếm hiệu quả hơn.</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/200px-Postgresql_elephant.svg.png" alt="PostgreSQL Logo">
+    <p>Nắm vững PostgreSQL và PDO sẽ giúp bạn xây dựng ứng dụng web backend mạnh mẽ, an toàn và hiệu suất cao.</p>
+</article>
+</main>
+<footer><p>&copy; 2026 MockBlog. Bài viết mẫu số 02.</p></footer>
+</body>
+</html>

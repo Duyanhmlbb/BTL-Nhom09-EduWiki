@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta property="og:title" content="Clean Code và Nghệ thuật Tái cấu trúc Mã nguồn trong PHP">
+    <title>Clean Code PHP - Nguyên tắc viết mã sạch và dễ bảo trì</title>
+</head>
+<body>
+<header><nav><a href="/">Trang chủ</a> &raquo; <a href="/ky-thuat">Kỹ thuật phần mềm</a></nav></header>
+<main>
+<article>
+    <h1>Clean Code và Nghệ thuật Tái cấu trúc Mã nguồn trong PHP</h1>
+    <p>Viết mã sạch (Clean Code) không chỉ giúp ứng dụng hoạt động ổn định mà còn giúp đồng nghiệp và chính bạn dễ dàng đọc hiểu, bảo trì trong tương lai.</p>
+    <h2>1. Nguyên tắc đặt tên có ý nghĩa</h2>
+    <p>Tên biến, hàm và lớp nên thể hiện rõ mục đích sử dụng. Tránh các tên viết tắt tối nghĩa như <code>$data</code>, <code>$temp</code>, <code>$arr</code>.</p>
+    <pre><code>// Chưa tốt:
+function get_u($i) { return db_query($i); }
+
+// Viết mã sạch:
+function findUserById(int $userId): ?User {
+    return UserRepository::findById($userId);
+}</code></pre>
+    <h2>2. Hàm chỉ nên làm một việc duy nhất (Single Responsibility)</h2>
+    <p>Một hàm chỉ nên đảm nhận một trách nhiệm duy nhất và thực hiện trách nhiệm đó một cách tốt nhất. Nếu hàm của bạn dài hơn 20 dòng hoặc có quá nhiều câu lệnh rẽ nhánh, đó là dấu hiệu cần tái cấu trúc.</p>
+    <h2>3. Nguyên tắc DRY (Don't Repeat Yourself)</h2>
+    <p>Không lặp lại mã nguồn. Khi phát hiện các đoạn logic giống nhau xuất hiện ở nhiều nơi, hãy trừu tượng hóa chúng thành các hàm tiện ích hoặc lớp dùng chung.</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Target_Corporation_logo_%28vector%29.svg/200px-Target_Corporation_logo_%28vector%29.svg.png" alt="Mục tiêu Clean Code">
+    <p>Mã nguồn sạch là tài sản lớn nhất của một dự án phần mềm lâu dài. Đầu tư vào chất lượng code hôm nay là tiết kiệm thời gian gỡ lỗi ngày mai.</p>
+</article>
+</main>
+<footer><p>&copy; 2026 MockBlog. Bài viết mẫu số 03.</p></footer>
+</body>
+</html>

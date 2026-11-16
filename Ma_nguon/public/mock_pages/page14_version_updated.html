@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta property="og:title" content="Hướng dẫn Docker Cơ bản cho Lập trình viên PHP">
+    <title>Docker PHP Nâng cao - Phiên bản 2.0 Bổ sung Docker Compose</title>
+</head>
+<body>
+<header><nav><a href="/">Trang chủ</a> &raquo; <a href="/devops">DevOps</a></nav></header>
+<main>
+<article>
+    <h1>Hướng dẫn Docker Cơ bản cho Lập trình viên PHP</h1>
+    <p><em>Phiên bản 2.0 (Bản cập nhật mở rộng).</em> Docker giúp đóng gói ứng dụng PHP cùng toàn bộ môi trường thực thi vào một container nhẹ và nhất quán.</p>
+    <h2>1. Dockerfile cơ bản cho PHP-FPM</h2>
+    <p>Tạo tệp Dockerfile để định nghĩa hệ điều hành nền tảng và cài đặt các phần mở rộng PHP cần thiết:</p>
+    <pre><code>FROM php:8.2-fpm
+RUN apt-get update &amp;&amp; apt-get install -y libpq-dev \
+    &amp;&amp; docker-php-ext-install pdo pdo_pgsql</code></pre>
+    <h2>2. Quản lý Đa Container với Docker Compose (Bổ sung mới)</h2>
+    <p>Trong phiên bản 2.0 này, chúng ta kết hợp ứng dụng PHP với Nginx web server và cơ sở dữ liệu PostgreSQL qua tệp docker-compose.yml tiện lợi:</p>
+    <pre><code>version: '3.8'
+services:
+  web:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: secret</code></pre>
+    <h2>3. Lợi ích khi cập nhật phiên bản</h2>
+    <p>Khi Wiki Archiver phát hiện hoặc người dùng bấm lấy bản mới, hệ thống sẽ lưu bản này thành Snapshot phiên bản 2 nhưng vẫn giữ nguyên Snapshot phiên bản 1 trước đó để so sánh đối chiếu.</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Docker_%28container_engine%29_logo.svg/220px-Docker_%28container_engine%29_logo.svg.png" alt="Docker Logo">
+</article>
+</main>
+<footer><p>&copy; 2026 MockBlog. Bài viết mẫu số 14 (Phiên bản cập nhật mở rộng).</p></footer>
+</body>
+</html>

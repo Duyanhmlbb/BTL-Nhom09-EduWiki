@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta property="og:title" content="Bảo mật Ứng dụng Web: Phòng chống SQL Injection và CSRF">
+    <title>Bảo mật Web - Hướng dẫn lập trình an toàn cho ứng dụng PHP</title>
+</head>
+<body>
+<header><nav><a href="/">Trang chủ</a> &raquo; <a href="/bao-mat">An toàn thông tin</a></nav></header>
+<main>
+<article>
+    <h1>Bảo mật Ứng dụng Web: Phòng chống SQL Injection và CSRF</h1>
+    <p>Bảo mật là tiêu chí sống còn đối với mọi ứng dụng web hoạt động trên môi trường Internet mở. Các lỗ hổng như SQL Injection và CSRF có thể dẫn đến rò rỉ toàn bộ cơ sở dữ liệu.</p>
+    <h2>1. Ngăn chặn SQL Injection</h2>
+    <p>SQL Injection xảy ra khi kẻ tấn công chèn các câu lệnh SQL độc hại thông qua dữ liệu đầu vào của người dùng. Cách phòng thủ tiêu chuẩn là luôn sử dụng Prepared Statements và tham số hóa (parameterized queries).</p>
+    <h2>2. Phòng chống tấn công CSRF (Cross-Site Request Forgery)</h2>
+    <p>CSRF đánh lừa trình duyệt của người dùng gửi các yêu cầu trái phép đến ứng dụng mà họ đã đăng nhập. Để phòng thủ, ứng dụng cần sử dụng Anti-CSRF Token ngẫu nhiên cho mỗi phiên làm việc.</p>
+    <h2>3. Băm mật khẩu an toàn</h2>
+    <p>Tuyệt đối không lưu mật khẩu ở dạng văn bản thô (plaintext) hay băm bằng MD5/SHA1 đã lỗi thời. Chuẩn bảo mật hiện đại yêu cầu dùng thuật toán <strong>bcrypt</strong> hoặc <strong>Argon2</strong> thông qua hàm <code>password_hash()</code> trong PHP.</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Lock_icon_2.svg/180px-Lock_icon_2.svg.png" alt="Bảo mật thông tin">
+    <p>Bảo mật là một quá trình liên tục từ khâu thiết kế, lập trình đến vận hành và kiểm thử hệ thống.</p>
+</article>
+</main>
+<footer><p>&copy; 2026 MockBlog. Bài viết mẫu số 04.</p></footer>
+</body>
+</html>
