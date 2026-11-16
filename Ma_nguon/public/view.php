@@ -646,12 +646,19 @@ require_once __DIR__ . '/../templates/header.php';
         <?php 
         $authorId = (int)($pageData['user_id'] ?? $pageData['author_id'] ?? 0);
         $isAuthor = $userId !== null && ($authorId === $userId || ($currentUser['role'] ?? '') === 'admin');
-        $isPublic = ($pageData['access_level'] === 'public');
+        
+        // Kiểm tra xem bài hiện tại có đang nằm ở Kho cá nhân riêng tư của chính tác giả hay không
+        $isInOwnPrivateLib = (
+            !empty($pageData['library_user_id']) && 
+            (int)$pageData['library_user_id'] === $authorId && 
+            empty($pageData['library_group_id']) && 
+            ($pageData['access_level'] ?? '') === 'private'
+        );
         ?>
 
         <?php if ($isAuthor): ?>
-            <!-- ĐƯA LÊN THƯ VIỆN CHUNG HOẶC RÚT VỀ -->
-            <?php if (!$isPublic): ?>
+            <!-- ĐƯA LÊN THƯ VIỆN CHUNG HOẶC RÚT VỀ RIÊNG TƯ -->
+            <?php if ($isInOwnPrivateLib): ?>
                 <form method="POST" action="" onsubmit="return eduConfirmSubmit(this, event, 'Đưa bài viết này lên Thư viện chung để mọi người cùng đọc?', 'Đưa Lên Thư Viện Chung', 'Xác nhận', false);" style="margin: 0;">
                     <input type="hidden" name="action" value="publish_public">
                     <button type="submit" class="btn btn-outline btn-sm" style="color: var(--wiki-blue);" title="Đưa lên Thư viện chung">
@@ -659,9 +666,9 @@ require_once __DIR__ . '/../templates/header.php';
                     </button>
                 </form>
             <?php else: ?>
-                <form method="POST" action="" onsubmit="return eduConfirmSubmit(this, event, 'Rút bài viết này về lại Kho cá nhân riêng tư?', 'Rút Về Riêng Tư', 'Xác nhận', false);" style="margin: 0;">
+                <form method="POST" action="" onsubmit="return eduConfirmSubmit(this, event, 'Rút bài viết này về lại Kho cá nhân riêng tư?<br><small style=\'color:#92400e;\'>Bài viết sẽ không còn hiển thị ở Thư viện chung hoặc nhóm nữa.</small>', 'Rút Về Riêng Tư', 'Xác nhận rút về', false);" style="margin: 0;">
                     <input type="hidden" name="action" value="unpublish_public">
-                    <button type="submit" class="btn btn-outline btn-sm" style="color: #6c757d;" title="Rút về kho riêng tư">
+                    <button type="submit" class="btn btn-outline btn-sm" title="Rút về kho cá nhân riêng tư">
                         🔒 Rút về riêng tư
                     </button>
                 </form>

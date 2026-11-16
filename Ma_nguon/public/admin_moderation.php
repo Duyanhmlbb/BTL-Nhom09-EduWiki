@@ -57,6 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
+
+
 // Tìm kiếm & lọc
 $searchKeyword = trim($_GET['q'] ?? '');
 $filterUserId = isset($_GET['user_id']) && $_GET['user_id'] !== '' ? (int)$_GET['user_id'] : null;
@@ -298,7 +300,7 @@ require_once __DIR__ . '/../templates/header.php';
                                 <?= date('d/m/Y H:i', strtotime($p['fetched_at'] ?? $p['created_at'])) ?>
                             </td>
                             <td style="padding: 10px 8px; text-align: right;">
-                                <div style="display: flex; justify-content: flex-end; gap: 6px;">
+                                <div style="display: flex; justify-content: flex-end; gap: 6px; flex-wrap: wrap;">
                                     <a href="/view.php?id=<?= $p['id'] ?>" target="_blank" class="btn btn-outline btn-sm">👁️ Xem</a>
                                     <form method="POST" action="" style="margin: 0;"
                                           onsubmit="return eduConfirmSubmit(this, event, 'Xóa bài viết này khỏi hệ thống vĩnh viễn?<br><small style=\'color:#b91c1c;\'>Không thể hoàn tác.</small>', 'Xóa Bài Viết', 'Xác nhận xóa');">

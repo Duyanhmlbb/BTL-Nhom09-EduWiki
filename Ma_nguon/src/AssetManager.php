@@ -76,11 +76,27 @@ class AssetManager {
                 $absoluteUrl = WebFetcher::resolveUrl($pageUrl, $chosenUrl);
                 $ext = $this->getExtension($absoluteUrl, self::SUPPORTED_IMAGE_EXTENSIONS, 'jpg');
 
-                $fileName = "img_{$savedPageId}_snap_{$snapshotId}_" . substr(md5($absoluteUrl), 0, 10) . ".{$ext}";
+                $baseFileName = "img_{$savedPageId}_snap_{$snapshotId}_" . substr(md5($absoluteUrl), 0, 10);
+                $fileName = $baseFileName . ".{$ext}";
                 $localFilePath = $this->storageDir . '/' . $fileName;
                 $localWebPath = $this->publicUrlPrefix . $fileName;
 
                 if ($this->ensureLocalFile($absoluteUrl, $localFilePath, $pageUrl)) {
+                    // Phát hiện file thực tế đã lưu (extension có thể đã thay đổi nếu Content-Type khác URL)
+                    $actualFilePath = $localFilePath;
+                    if (!file_exists($actualFilePath) || filesize($actualFilePath) === 0) {
+                        // Thử tìm file với extension khác (svg, png, jpg, gif, webp)
+                        foreach (self::SUPPORTED_IMAGE_EXTENSIONS as $tryExt) {
+                            $candidate = $this->storageDir . '/' . $baseFileName . '.' . $tryExt;
+                            if (file_exists($candidate) && filesize($candidate) > 0) {
+                                $actualFilePath = $candidate;
+                                break;
+                            }
+                        }
+                    }
+                    $actualFileName = basename($actualFilePath);
+                    $localWebPath   = $this->publicUrlPrefix . $actualFileName;
+
                     $newTag = $fullTag;
                     
                     // Loại bỏ srcset và sizes từ web gốc để trình duyệt không bỏ qua ảnh cục bộ
@@ -183,7 +199,60 @@ class AssetManager {
     private function getExtension(string $url, array $supported, string $default): string {
         $path = parse_url($url, PHP_URL_PATH);
         $ext = strtolower(pathinfo($path ?? '', PATHINFO_EXTENSION));
+        // Loại bỏ query string dính vào extension (vd: .jpg?v=123 → jpg)
+        $ext = preg_replace('/[^a-z0-9].*$/', '', $ext);
         return in_array($ext, $supported, true) ? $ext : $default;
+    }
+
+    /**
+     * Phát hiện extension thực tế từ Content-Type header hoặc nội dung file.
+     * Trả về extension đúng (svg, png, jpg, gif, webp) hoặc null nếu không xác định được.
+     */
+    private function detectRealExtension(string $data, array $responseHeaders): ?string {
+        // 1. Kiểm tra Content-Type từ response header
+        $contentType = '';
+        foreach ($responseHeaders as $h) {
+            if (stripos($h, 'content-type:') === 0) {
+                $contentType = strtolower(trim(substr($h, 13)));
+                break;
+            }
+        }
+        $contentType = explode(';', $contentType)[0];
+
+        $mimeMap = [
+            'image/svg+xml'   => 'svg',
+            'image/png'       => 'png',
+            'image/jpeg'      => 'jpg',
+            'image/gif'       => 'gif',
+            'image/webp'      => 'webp',
+            'image/avif'      => 'avif',
+            'image/x-icon'    => 'ico',
+            'image/bmp'       => 'bmp',
+        ];
+        if (isset($mimeMap[$contentType])) {
+            return $mimeMap[$contentType];
+        }
+
+        // 2. Kiểm tra magic bytes (file signature)
+        $header4 = substr($data, 0, 4);
+        $header8 = substr($data, 0, 8);
+        if (str_starts_with($data, '<svg') || str_starts_with($data, '<?xml') || str_contains(substr($data, 0, 100), '<svg')) {
+            return 'svg';
+        }
+        if (str_starts_with($header8, "\x89PNG\r\n\x1a\n")) {
+            return 'png';
+        }
+        if (str_starts_with($header4, "\xff\xd8\xff")) {
+            return 'jpg';
+        }
+        if (str_starts_with($header4, 'GIF8')) {
+            return 'gif';
+        }
+        if (str_starts_with($header4, 'RIFF') && str_contains(substr($data, 0, 12), 'WEBP')) {
+            return 'webp';
+        }
+
+        return null;
     }
 
     private function ensureLocalFile(string $url, string $savePath, ?string $referer = null): bool {
@@ -193,6 +262,10 @@ class AssetManager {
         return $this->downloadFile($url, $savePath, $referer);
     }
 
+    /**
+     * Tải file về và tự động sửa extension nếu Content-Type thực tế khác với đuôi file trong URL.
+     * Trả về đường dẫn thực tế đã lưu (có thể khác $saveTo nếu extension bị đổi).
+     */
     private function downloadFile(string $url, string $saveTo, ?string $referer = null): bool {
         $parsed = parse_url($url);
         if (!$parsed || !isset($parsed['host'])) {
@@ -228,10 +301,22 @@ class AssetManager {
 
         if ($data !== false && strlen($data) > 0) {
             // Không lưu nếu máy chủ trả về mã lỗi 4xx hoặc 5xx
-            $responseHeader = $http_response_header[0] ?? '';
+            $responseHeaders = $http_response_header ?? [];
+            $responseHeader  = $responseHeaders[0] ?? '';
             if (preg_match('/HTTP\/\d\.\d\s+([45]\d\d)/i', $responseHeader)) {
                 return false;
             }
+
+            // Tự động phát hiện extension thực tế từ Content-Type / magic bytes
+            $realExt = $this->detectRealExtension($data, $responseHeaders);
+            if ($realExt !== null) {
+                $currentExt = strtolower(pathinfo($saveTo, PATHINFO_EXTENSION));
+                if ($currentExt !== $realExt) {
+                    // Đổi extension file lưu cho đúng với nội dung thực tế
+                    $saveTo = preg_replace('/\.[^.]+$/', '.' . $realExt, $saveTo);
+                }
+            }
+
             return @file_put_contents($saveTo, $data) !== false;
         }
 

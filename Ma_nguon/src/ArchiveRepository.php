@@ -715,7 +715,13 @@ class ArchiveRepository {
         $stmt = $this->db->prepare("SELECT user_id FROM saved_pages WHERE id = ?");
         $stmt->execute([$pageId]);
         $authorId = $stmt->fetchColumn();
-        if ($authorId === false || ((int)$authorId !== $userId && $userId !== 1)) {
+        if ($authorId === false) {
+            return false;
+        }
+        $authorId = (int)$authorId;
+        $currentUser = class_exists('Auth') ? Auth::user() : null;
+        $isAdmin = ($currentUser && ($currentUser['role'] ?? '') === 'admin');
+        if ($authorId !== $userId && !$isAdmin) {
             return false;
         }
         $update = $this->db->prepare("UPDATE saved_pages SET library_id = 1 WHERE id = ?");
@@ -723,16 +729,22 @@ class ArchiveRepository {
     }
 
     /**
-     * Rút bài viết khỏi Thư viện chung về lại Kho riêng tư của người dùng
+     * Rút bài viết khỏi Thư viện chung hoặc nhóm về lại Kho riêng tư của tác giả
      */
     public function unpublishFromPublic(int $pageId, int $userId): bool {
         $stmt = $this->db->prepare("SELECT user_id FROM saved_pages WHERE id = ?");
         $stmt->execute([$pageId]);
         $authorId = $stmt->fetchColumn();
-        if ($authorId === false || ((int)$authorId !== $userId && $userId !== 1)) {
+        if ($authorId === false) {
             return false;
         }
-        $targetLibId = $this->getOrCreateUserDefaultLibrary($userId);
+        $authorId = (int)$authorId;
+        $currentUser = class_exists('Auth') ? Auth::user() : null;
+        $isAdmin = ($currentUser && ($currentUser['role'] ?? '') === 'admin');
+        if ($authorId !== $userId && !$isAdmin) {
+            return false;
+        }
+        $targetLibId = $this->getOrCreateUserDefaultLibrary($authorId);
         $update = $this->db->prepare("UPDATE saved_pages SET library_id = ? WHERE id = ?");
         return $update->execute([$targetLibId, $pageId]);
     }
@@ -998,7 +1010,8 @@ class ArchiveRepository {
     public function getPageDetails(int $pageId, ?int $versionNumber = null, ?int $userId = null): ?array {
         $sql = "
             SELECT p.id, p.library_id, p.url, p.title, p.created_at, p.user_id,
-                   l.name AS library_name, l.access_level
+                   l.name AS library_name, l.access_level,
+                   l.user_id AS library_user_id, l.group_id AS library_group_id
             FROM saved_pages p
             JOIN libraries l ON l.id = p.library_id
             WHERE p.id = ?
@@ -1074,8 +1087,11 @@ class ArchiveRepository {
 
         return [
             'id' => (int)$page['id'],
+            'user_id' => $page['user_id'] !== null ? (int)$page['user_id'] : null,
             'library_id' => (int)$page['library_id'],
             'library_name' => $page['library_name'],
+            'library_user_id' => $page['library_user_id'] !== null ? (int)$page['library_user_id'] : null,
+            'library_group_id' => $page['library_group_id'] !== null ? (int)$page['library_group_id'] : null,
             'access_level' => $page['access_level'],
             'url' => $page['url'],
             'title' => $page['title'],
